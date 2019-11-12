@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 
-set -euxo pipefail
+_LIBCOUCHBASE_VER=2.10.2
+_PROJECT_ROOT=${PWD}
 
-echo 'Echo from app pre compile'
-echo
+# Build and install Couchbase C SDK (core library only).
+# Couchbase make code runs some Git commands, so requires making a clone.
+git clone --depth 1 --branch $_LIBCOUCHBASE_VER \
+    https://github.com/couchbase/libcouchbase.git /tmp/libcouchbase_$$
+cd /tmp/libcouchbase_$$
+./configure.pl \
+    --prefix $_PROJECT_ROOT \
+    --disable-tools \
+    --disable-tests \
+    --disable-plugins \
+    --disable-couchbasemock
+make
+make install
